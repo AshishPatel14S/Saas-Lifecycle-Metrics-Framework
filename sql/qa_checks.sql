@@ -128,3 +128,19 @@ FROM `slmf-analytics.slmf_staging.stg_events_enriched`;
 -- Users derived from events (should match dim_user count)
 SELECT COUNT(DISTINCT user_id) AS users_distinct_from_events
 FROM `slmf-analytics.slmf_staging.stg_events_enriched`;
+
+-- ============================================================
+-- 7) Purchase grain enforcement (dedupe check)
+-- ============================================================
+
+SELECT COUNT(*) AS dup_purchase_keys
+FROM (
+  SELECT purchase_key
+  FROM `slmf-analytics.slmf_dw.fact_purchases`
+  GROUP BY 1
+  HAVING COUNT(*) > 1
+);
+
+SELECT COUNTIF(revenue IS NULL) AS purchase_null_revenue_cnt
+FROM `slmf-analytics.slmf_dw.fact_purchases`;
+
