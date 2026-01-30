@@ -253,3 +253,15 @@ FROM p
 WHERE COALESCE(transaction_id, TO_HEX(MD5(CONCAT(user_id,'|',CAST(purchase_ts AS STRING))))) NOT IN (
   SELECT purchase_key FROM `slmf-analytics.slmf_dw.fact_purchases`
 );
+-- Enforce purchase grain: 1 row per purchase_key (dedupe)
+CREATE OR REPLACE TABLE `slmf-analytics.slmf_dw.fact_purchases` AS
+SELECT * EXCEPT(rn)
+FROM (
+  SELECT
+    purchase_key, user_id, purchase_ts, purchase_date,
+    transaction_id, revenue,
+    device_key, geo_key, traffic_key, session_key,
+    ROW_NUMBER() OVER (PARTITION BY purchase_key ORDER BY purchase_ts ASC) AS rn
+  FROM `slmf-analytics.slmf_dw.fact_purchases`
+)
+WHERE rn = 1;
