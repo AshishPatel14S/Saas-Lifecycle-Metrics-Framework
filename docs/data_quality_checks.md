@@ -19,7 +19,7 @@ QA checks validate the dimensional model built from GA4 events:
 - fact_sessions: 360,129
 - fact_funnel_steps: 463,259
 - fact_user_daily_activity: 319,066
-- fact_purchases: 5,692
+- fact_purchases: 4,475 (after dedupe)
 
 ### Uniqueness
 - dim_user user_id duplicates: 0
@@ -34,7 +34,7 @@ QA checks validate the dimensional model built from GA4 events:
   - user_id: 0
   - purchase_ts: 0
   - purchase_date: 0
-  - revenue: 450
+  - revenue: 0 (after dedupe)
 
 ### Referential integrity (orphans)
 - sessions without dim_user: 0
@@ -62,3 +62,9 @@ Observed 327 duplicate `purchase_key` values in `fact_purchases`. Root cause is 
 ## Notes / caveats
 - GA4 exports can include edge cases (duplicate event emission and revenue nulls).
 - These are documented and handled with explicit grain rules and conservative assumptions.
+
+- ## After remediation (final)
+- fact_purchases duplicate purchase_keys: 0
+- fact_purchases row count: 4,475
+- fact_purchases null revenue count: 0
+
