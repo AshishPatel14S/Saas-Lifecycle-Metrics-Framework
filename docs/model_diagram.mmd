@@ -1,0 +1,15 @@
+erDiagram
+  dim_date ||--o{ fact_sessions : "date"
+  dim_user ||--o{ fact_sessions : "user"
+  dim_device ||--o{ fact_sessions : "device"
+  dim_geo ||--o{ fact_sessions : "geo"
+  dim_traffic_source ||--o{ fact_sessions : "traffic"
+
+  dim_date ||--o{ fact_user_daily_activity : "date"
+  dim_user ||--o{ fact_user_daily_activity : "user"
+
+  dim_user ||--o{ fact_purchases : "user"
+  dim_date ||--o{ fact_purchases : "date"
+
+  fact_sessions ||--o{ fact_funnel_steps : "session"
+  fact_sessions ||--o{ fact_purchases : "session"
